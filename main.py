@@ -4,9 +4,9 @@ from mega import Mega
 # Masukkan API key OpenAI-mu
 openai.api_key = "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"
 
-# Fungsi generate AI
-def generate_ai(prompt):
-    response = openai.ChatCompletion.create(
+# Proses generate AI
+async def generate_ai(prompt):
+    response = await openai.ChatCompletion.acreate(
         model="gpt-3.5-turbo",
         messages=[
             {"role": "system", "content": "You are an AI content generator."},
@@ -16,17 +16,20 @@ def generate_ai(prompt):
     result = response['choices'][0]['message']['content']
     return result
 
-# Prompt input
-prompt = "Buatkan cerita edukatif lucu untuk karakter Plompi dan Lumi berdurasi 1 menit."
-hasil = generate_ai(prompt)
+import asyncio
 
-# Simpan hasil ke file
-with open("hasil_ai.txt", "w") as f:
-    f.write(hasil)
+async def main():
+    prompt = "Buatkan cerita edukatif lucu untuk karakter Plompi dan Lumi berdurasi 1 menit."
+    hasil = await generate_ai(prompt)
 
-# Upload ke MEGA
-mega = Mega()
-m = mega.login("romlirico67@gmail.com", "Rico@say4")
-m.upload("hasil_ai.txt")
+    with open("hasil_ai.txt", "w") as f:
+        f.write(hasil)
 
-print("Berhasil generate dan upload ke MEGA!")
+    mega = Mega()
+    m = mega.login("romlirico67@gmail.com", "Rico@say4")
+    m.upload("hasil_ai.txt")
+
+    print("Berhasil generate dan upload ke MEGA!")
+
+if __name__ == "__main__":
+    asyncio.run(main())
