@@ -1,22 +1,27 @@
-import openai from mega import Mega import asyncio import tenacity
+import openai
 
-Masukkan API key OpenAI-mu
-
+# Masukkan API key OpenAI kamu di sini:
 openai.api_key = "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"
 
-Retry dengan tenacity untuk menghindari limit error OpenAI
+# Prompt AI yang ingin kamu kirimkan
+prompt = "Buatkan cerita edukatif lucu untuk anak-anak tentang persahabatan Plompi dan Lumi."
 
-@tenacity.retry(wait=tenacity.wait_fixed(2), stop=tenacity.stop_after_attempt(5)) async def generate_ai(prompt): response = await asyncio.to_thread(openai.ChatCompletion.create, model="gpt-3.5-turbo", messages=[ {"role": "system", "content": "You are an AI content generator."}, {"role": "user", "content": prompt} ] ) return response['choices'][0]['message']['content']
+# Kirim ke OpenAI
+response = openai.ChatCompletion.create(
+    model="gpt-4o",
+    messages=[
+        {"role": "system", "content": "You are a helpful assistant."},
+        {"role": "user", "content": prompt}
+    ]
+)
 
-async def main(): prompt = "Buatkan cerita edukatif lucu untuk karakter Plompi dan Lumi berdurasi 1 menit." hasil = await generate_ai(prompt)
+# Ambil hasilnya
+hasil = response.choices[0].message.content
 
-with open("hasil_ai.txt", "w") as f:
+# Cetak hasil
+print("Hasil dari AI:")
+print(hasil)
+
+# Simpan ke file (opsional)
+with open("hasil_ai.txt", "w", encoding="utf-8") as f:
     f.write(hasil)
-
-mega = Mega()
-m = mega.login("romlirico67@gmail.com", "Rico@say4")
-m.upload("hasil_ai.txt")
-print("Berhasil generate dan upload ke MEGA!")
-
-if name == "main": asyncio.run(main())
-
